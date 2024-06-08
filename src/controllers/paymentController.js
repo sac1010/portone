@@ -1,12 +1,19 @@
 import stripe from '../config/stripe.js';
 
+// Create and Confirm a PaymentIntent
 export const createIntent = async (req, res) => {
-    const { amount, currency } = req.body;
+    const { amount, currency, payment_method } = req.body;
 
     try {
         const paymentIntent = await stripe.paymentIntents.create({
             amount,
             currency,
+            payment_method,
+            confirm: true,
+            automatic_payment_methods: {
+                enabled: true,
+                allow_redirects: 'never',
+            },
         });
         res.status(201).json(paymentIntent);
     } catch (error) {
@@ -14,6 +21,7 @@ export const createIntent = async (req, res) => {
     }
 };
 
+// Capture the PaymentIntent
 export const captureIntent = async (req, res) => {
     const { id } = req.params;
 
@@ -25,6 +33,7 @@ export const captureIntent = async (req, res) => {
     }
 };
 
+// Create a refund for a PaymentIntent
 export const createRefund = async (req, res) => {
     const { id } = req.params;
 
@@ -36,6 +45,7 @@ export const createRefund = async (req, res) => {
     }
 };
 
+// Get a list of all PaymentIntents
 export const getIntents = async (req, res) => {
     try {
         const paymentIntents = await stripe.paymentIntents.list();
