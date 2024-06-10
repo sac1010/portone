@@ -1,13 +1,19 @@
-import express from 'express';
-import paymentRoutes from './src/routes/paymentRoutes.js';
+import express from "express";
+import dotenv from "dotenv";
+import paymentRoutes from "./src/routes/paymentRoutes.js";
+import setupSwagger from "./src/swagger.js";
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.use('/api', paymentRoutes);
+setupSwagger(app);
 
+app.use("/api", paymentRoutes);
+
+const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
